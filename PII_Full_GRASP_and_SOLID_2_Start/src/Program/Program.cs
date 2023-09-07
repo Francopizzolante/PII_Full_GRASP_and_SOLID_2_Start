@@ -25,7 +25,7 @@ namespace Full_GRASP_And_SOLID
             recipe.FinalProduct = GetProduct("Café con leche");
             recipe.AddStep(new Step(GetProduct("Café"), 100, GetEquipment("Cafetera"), 120));
             recipe.AddStep(new Step(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60));
-            recipe.PrintRecipe();
+            ConsolePrinter.PrintRecipe(recipe);
         }
 
         private static void PopulateCatalogs()
@@ -68,6 +68,24 @@ namespace Full_GRASP_And_SOLID
         {
             var query = from Equipment equipment in equipmentCatalog where equipment.Description == description select equipment;
             return query.FirstOrDefault();
+        }
+    }
+    // El patrón utilizado aquí es el Principio de Responsabilidad Única (SRP),
+    // donde se separa la responsabilidad de imprimir recetas en una clase dedicada
+    // (ConsolePrinter), evitando que la clase Recipe tenga múltiples tareas
+    // cambiando y mejorando la comprencion del código.
+    public class ConsolePrinter
+    {
+        // Método estático para imprimir una receta en la consola.
+        public static void PrintRecipe(Recipe recipe)
+        {
+            Console.WriteLine($"Receta de {recipe.FinalProduct.Description}:");
+            foreach (Step step in recipe.Steps)
+            {
+                // Imprime cada paso de la receta con información detallada.
+                Console.WriteLine($"{step.Quantity} de '{step.Input.Description}' " +
+                    $"usando '{step.Equipment.Description}' durante {step.Time}");
+            }
         }
     }
 }
